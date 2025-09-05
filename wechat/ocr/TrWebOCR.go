@@ -4,11 +4,15 @@ import (
 	"bytes"
 	"encoding/base64"
 	"encoding/json"
+	"errors"
 	"image"
 	"image/png"
 	"net/http"
 	"net/url"
 	"slices"
+	"strings"
+
+	"github.com/jtyoui/WechatControl/tool"
 )
 
 type result struct {
@@ -36,7 +40,7 @@ func TrWebOCR(img image.Image) (text string, err error) {
 		"is_draw":  {"0"},
 	}
 
-	if response, err = http.PostForm("http://10.4.137.11:8089/api/tr-run/", payload); err != nil {
+	if response, err = http.PostForm(tool.Config.OCR["url"], payload); err != nil {
 		return
 	}
 
@@ -69,5 +73,16 @@ func TrWebOCR(img image.Image) (text string, err error) {
 			text += "\n"
 		}
 	}
+
+	text = strings.TrimSpace(text)
+
+	if text != "" {
+		// 获取最后一段
+		texts := strings.Split(text, "\n")
+		text = texts[len(texts)-1]
+		return
+	}
+
+	err = errors.New("ocr识别为空")
 	return
 }

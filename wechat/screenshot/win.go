@@ -5,11 +5,12 @@ package screenshot
 import (
 	"errors"
 	"fmt"
-	"github.com/lxn/win"
 	"image"
 	"image/color"
 	"syscall"
 	"unsafe"
+
+	"github.com/lxn/win"
 )
 
 func Screenshot() (img image.Image, err error) {

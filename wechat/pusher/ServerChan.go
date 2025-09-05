@@ -6,7 +6,8 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
-	"strings"
+
+	"github.com/jtyoui/WechatControl/tool"
 )
 
 type sendResponse struct {
@@ -22,19 +23,15 @@ func ServerChan(text string) (err error) {
 		result   sendResponse
 	)
 
-	sendKey := ""
-	link := fmt.Sprintf("https://1315.push.ft07.com/send/%s.send", sendKey)
+	link := fmt.Sprintf("https://1315.push.ft07.com/send/%s.send", tool.Config.Pusher["sendKey"])
 
 	params := url.Values{}
 
-	texts := strings.Split(strings.TrimSpace(text), "\n")
-	text = "# 【OCR识别结果】\n" + texts[len(texts)-1]
-	params.Set("title", "微信OCR推送")
+	params.Set("title", "微信推送")
 	params.Set("desp", text)
-	params.Set("tags", "微信|OCR")
+	params.Set("tags", "微信")
 
-	response, err = http.Post(link, "application/x-www-form-urlencoded", strings.NewReader(params.Encode()))
-	if err != nil {
+	if response, err = http.PostForm(link, params); err != nil {
 		return
 	}
 

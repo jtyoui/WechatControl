@@ -1,6 +1,9 @@
 package tool
 
-import "log"
+import (
+	"errors"
+	"log"
+)
 
 // ANSI颜色代码
 const (
@@ -24,9 +27,10 @@ func Success(message string) {
 }
 
 // Error 记录错误日志（红色）
-func Error(message string) {
+func Error(message string) error {
 	log.SetPrefix(colorRed + "[错误] " + colorReset)
 	log.Println(colorRed + message + colorReset)
+	return errors.New(message)
 }
 
 // Warn 记录警告日志（黄色）
